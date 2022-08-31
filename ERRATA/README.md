@@ -25,6 +25,20 @@ For context:
 
 I remember that I was thinking about whether I should use the convenience term or not. I thought I cleaned this up, but it now looks like a weird hybrid where I introduce the convenience term but then don't use it.
 
+**Page 38**
+
+In the MSE derivative, there is a spot where the summation is over *i* but it should be over *j*:
+
+![](./images/38.png)
+
+### Chapter 3
+
+It should be *logical_xor* instead of *logical_or* in the text.
+
+**Page 60**
+
+The correct link is: https://www.youtube.com/watch?v=L0FU8NFpx4E instead of  https://www.youtube.com/L0FU8NFpx4E.
+
 
 
 ### Chapter 6
@@ -94,15 +108,72 @@ But it makes more sense to compute the median absolute deviation
 
 ### Chapter 7
 
+**Pages 228 & 236**
+
+The labels "Alcohol" and "OD280/OD315 of diluted wines" should be flipped in the code (and the resulting figure).
+
 **Page 242**
 
 The value -0.69 should be -0.67 as shown in the annotated screenshot below:
 
 ![](images/242.png)
 
+
+
+### Chapter 8
+
+**Page 261**
+
+An improved version:
+
+Change `text.lower()` to `text` in
+
+
+```python
+emoticons = re.findall('(?::|;|=)(?:-)?(?:\)|\(|D|P)', text.lower())   
+```
+
+to catch emoticons like ":-P"
+
+
+
+### Chapter 9
+
+**Page 291**
+
+In original text of the first paragraph in  p. 291
+
+> We can see that the MSE on the training dataset is **larger**  than on the test set, which is an indicator that our model is slightly overfitting the training data in this case. 
+
+should be corrected as follows:
+
+> We can see that the MSE on the training dataset is **less**  than on the test set, which is an indicator that our model is slightly overfitting the training data in this case.
+
+**Page 292**
+
+Not an error, but in the proof showing that the $$R^2$$ is a rescaled version of the MSE,
+
+$$
+\begin{align*}
+R^2 
+&= 1 - \frac{SSE}{SST} \\
+&= 1 - \frac{ \frac{1}{n} \sum_{i=1}^{n} \big ( y^{(i)} - \hat{y}^{(i)} \big )^{2} }
+        { \frac{1}{n} \sum_{i=1}^{n} \big ( y^{(i)} - \mu_{y} \big )^{2} } \\
+&= 1 - \frac{MSE}{Var(y)}
+\end{align*}
+$$
+
+it might be good to insert 
+
+$$
+= 1 - \frac{\frac{1}{n}SSE}{\frac{1}{n}SST}
+$$
+
+after the first line to make it easier to follow.
+
 ### Chapter 11
 
-**Page 348:**
+**Page 34:**
 
 The code comments for the `NeuralNetMLP`'s are outdated [[#23](https://github.com/rasbt/machine-learning-book/issues/23)]. Originally, I implemented the following computation
 
@@ -135,15 +206,17 @@ Similarly, the code comments for `z_out` should be
 z_out = np.dot(a_h, self.weight_out.T) + self.bias_out
 ```
 
-
-
 **Page 366**
 
 There are two duplication errors on the page as shown in the figure below:
 
 ![](images/366.png)
 
+
+
 ### Chapter 12
+
+
 
 **Page 380**
 
@@ -171,6 +244,25 @@ to
 ```python
 y_train = torch.from_numpy(y_train).float()
 ```
+
+
+
+**Page 392**
+
+To be more explicit and to improve compatibility with certain computing environment, the line 
+
+```python
+loss = loss_fn(pred, y_batch)
+```
+
+should be changed to
+
+```python
+loss = loss_fn(pred, y_batch.long())
+```
+
+
+
 
 
 **Page 396**
@@ -208,6 +300,23 @@ The first line misses the `/batch_size`.
 
 
 
+**Page 429**
+
+On page, we 419 defined the number of training examples as `n_train = 100`. On page 429 we then write 
+
+```python
+loss_hist_train[epoch] /= 100/batch_size
+accuracy_hist_train[epoch] /= 100/batch_size
+```
+
+It is technically not a mistake, but some readers may wonder where the `100/` comes from, so it might be clearer to write it as follows:
+
+```python
+loss_hist_train[epoch] /= n_train/batch_size
+accuracy_hist_train[epoch] /= n_train/
+```
+
+
 ### Chapter 14
 
 **Page 472**
@@ -226,8 +335,17 @@ the phrases `w Probas` and `w Logits` should be flipped.  [[#34](https://github.
 
 
 
-
 ### Chapter 15
+
+**Page 483**
+
+Not an errata, but it would be good to clarify in the infobox that users have to unzip the `img_align_celeba.zip` file, which is inside the unzipped `celeba` folder.
+
+
+**Page 488**
+
+The correct smile attribute is not `attr[18]` but `attr[31]`. Consequently, the plot on pg. 495 will look a bit different. The test accuracy on pg. 496 will be around 90.21%. And the pictures on pg. 497 will look a bit different. The [ch14_part2.ipynb](../ch14/ch14_part2.ipynb) Jupyter notebook in this GitHub repository was updated accordingly :).
+
 
 **Page 508**
 
@@ -236,6 +354,32 @@ In the following line
     ht = torch.matmul(xt, torch.transpose(w_xh, 0, 1)) + b_hh
 
 the bias should be  `b_xh` instead of `b_hh`. However, the resulting output is correct.
+
+
+
+**Page 519**
+
+There is a sentence that says "Therefore, the embedding matrix in this case has the size 10×6." However, as it can be seen from the code, it should be "10×3" not "10×6". [[#36](https://github.com/rasbt/machine-learning-book/issues/36)]
+
+**Page 530**
+
+It would not make any difference because of the newline characters at the end, but to be technically correct, we should add a `+1` to the `chunk_size` in
+
+```python
+>>> text_chunks = [text_encoded[i:i+chunk_size]
+... for i in range(len(text_encoded)-chunk_size)]
+```
+
+I.e.,
+
+```python
+>>> text_chunks = [text_encoded[i:i+chunk_size]
+... for i in range(len(text_encoded)-chunk_size+1)]
+```
+
+(Via [[#38](https://github.com/rasbt/machine-learning-book/issues/38)].)
+
+
 
 **Page 532**
 
